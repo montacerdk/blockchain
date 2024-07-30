@@ -34,3 +34,16 @@ class Blockchain:
     def get_previous_block(self):
         return self.chain[-1]
 
+    def resolve_proof_of_work(self, previous_proof):
+        new_proof = 1
+        is_valid_proof = False
+        
+        while is_valid_proof is False:
+            hash_operation = hashlib.sha256(str(new_proof**2 - previous_proof**2).encode()).hexdigest()
+            
+            if hash_operation[:4] == '0000':
+                is_valid_proof = True
+            else:
+                new_proof += 1
+        
+        return new_proof

@@ -37,56 +37,79 @@ class Blockchain:
     def resolve_proof_of_work(self, previous_proof):
         new_proof = 1
         is_valid_proof = False
-        
+
         while is_valid_proof is False:
             hash_operation = hashlib.sha256(str(new_proof**2 - previous_proof**2).encode()).hexdigest()
-            
+
             if hash_operation[:4] == '0000':
                 is_valid_proof = True
             else:
                 new_proof += 1
-        
+
         return new_proof
 
     def hash(self, block):
         encoded_block = json.dumps(block, sort_keys = True).encode()
-        
+
         return hashlib.sha256(encoded_block).hexdigest()
-    
+
     def is_chain_valid(self, chain):
         previous_block = chain[0]
         current_block_index = 1
-        
+
         while current_block_index < len(chain):
             current_block = chain[current_block_index]
-            
+
             # First, we verify if the previous hash is equal to the hash of the current block.
             if current_block['previous_hash'] != self.hash(previous_block):
                 return False
-            
+
             # Second, we verify that the proof of the current block respects our proof of work.
             previous_proof = previous_block['proof']
             current_proof = current_block['proof']
-            
+
             hash_operation = hashlib.sha256(str(current_proof**2 - previous_proof**2).encode()).hexdigest()
-            
-            
+
+
             if hash_operation[:4] != '0000':
                 return False
-            
+
             previous_block = current_block
             current_block_index += 1
-            
+
         return True
-    
-    
+
+
 # Web app to serve our Blockchain.
 app = Flask(__name__)
 
 
 # Create a Blockchain.
 blockchain = Blockchain()
-        
-        
-        
-        
+
+
+# Mine a block.
+@app.route('/mine-block', methods = ['GET'])
+def mine_block():
+    previous_block = blockchain.get_previous_block()
+    previous_proof = previous_block['proof']
+    proof = blockchain.resolve_proof_of_work(previous_proof)
+    previous_hash = blockchain.hash(previous_block)
+    new_block = blockchain.create_block(proof, previous_hash)
+
+    response = {
+        'message': 'Congrats, you just mined a block!',
+        'index': new_block['index'],
+        'timestamp': new_block['timestamp'],
+        'proof': new_block['proof'],
+        'previous_hash': new_block['previous_hash'],
+    }
+
+    return jsonify(response), 200
+
+
+
+
+
+
+

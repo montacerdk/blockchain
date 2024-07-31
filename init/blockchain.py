@@ -79,6 +79,9 @@ class Blockchain:
             
         return True
     
+    
+# Web app to serve our blockchain.
+app = Flask(__name__)
         
         
         

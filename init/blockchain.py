@@ -19,6 +19,7 @@ class Blockchain:
         self.chain = []
         self.create_block(proof = 1, previous_hash = '0')
 
+    # Create a block.
     def create_block(self, proof, previous_hash):
         block = {
             'index': len(self.chain) + 1,
@@ -31,9 +32,11 @@ class Blockchain:
 
         return block
 
-    def get_previous_block(self):
+    # Get the last block of the chain.
+    def get_last_block(self):
         return self.chain[-1]
 
+    # Resolve the proof of work.
     def resolve_proof_of_work(self, previous_proof):
         new_proof = 1
         is_valid_proof = False
@@ -48,11 +51,13 @@ class Blockchain:
 
         return new_proof
 
+    # Hash a block.
     def hash(self, block):
         encoded_block = json.dumps(block, sort_keys = True).encode()
 
         return hashlib.sha256(encoded_block).hexdigest()
 
+    # Check if the hole Blockchain is valid.
     def is_chain_valid(self, chain):
         previous_block = chain[0]
         current_block_index = 1
@@ -91,10 +96,10 @@ blockchain = Blockchain()
 # Mine a block.
 @app.route('/mine-block', methods = ['GET'])
 def mine_block():
-    previous_block = blockchain.get_previous_block()
-    previous_proof = previous_block['proof']
+    last_block = blockchain.get_last_block()
+    previous_proof = last_block['proof']
     proof = blockchain.resolve_proof_of_work(previous_proof)
-    previous_hash = blockchain.hash(previous_block)
+    previous_hash = blockchain.hash(last_block)
     new_block = blockchain.create_block(proof, previous_hash)
 
     response = {

@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Blockchain-API",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

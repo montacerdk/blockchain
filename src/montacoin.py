@@ -209,5 +209,24 @@ def add_transaction():
 
     return jsonify(response), 201
 
+# Connect new nodes.
+@app.route('/connect-node', methods = ['POST'])
+def connect_node():
+    json = request.get_json()
+    nodes = json.get('nodes')
+
+    if nodes is None:
+        return 'Bad Request - No node was provided.', 400
+
+    for node in nodes:
+        blockchain.add_node(node)
+
+    response = {
+        'message': 'All the nodes are now connected. The Montacoin Blockchain now contains the following nodes:',
+        'total_nodes': list(blockchain.nodes),
+    }
+
+    return jsonify(response), 201
+
 # Run the app.
 app.run(host = '0.0.0.0', port = 5006)

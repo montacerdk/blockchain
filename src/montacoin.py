@@ -27,6 +27,7 @@ class Blockchain:
         self.chain = []
         self.transactions = []
         self.create_block(proof = 1, previous_hash = '0')
+        self.nodes = set()
 
     # Create a block.
     def create_block(self, proof, previous_hash):
@@ -105,6 +106,11 @@ class Blockchain:
         previous_block = self.get_last_block()
 
         return previous_block['index'] + 1
+
+    # Add a node to the list of nodes.
+    def add_node(self, address):
+        parsed_url = urlparse(address)
+        self.nodes.add(parsed_url.netloc)
 
 # Web app to serve our Blockchain.
 app = Flask(__name__)

@@ -112,6 +112,32 @@ class Blockchain:
         parsed_url = urlparse(address)
         self.nodes.add(parsed_url.netloc)
 
+    # Replace the chain with the longest chain if needed.
+    def replace_chain(self):
+        network = self.nodes
+        longest_chain = None
+        max_length = len(self.chain)
+
+        for node in network:
+            response = requests.get(f'http://{node}/get-chain')
+
+            if response.status_code == 200:
+                length = response.json()['length']
+                chain = response.json()['chain']
+
+                if length > max_length and self.is_chain_valid(chain):
+                    max_length = length
+                    longest_chain = chain
+
+        if longest_chain:
+            self.chain = longest_chain
+            return True
+
+        return False
+
+# creating an address for the node on Port 5000
+node_address = str(uuid4()).replace('-', '')
+
 # Web app to serve our Blockchain.
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
@@ -128,6 +154,7 @@ def mine_block():
     proof = blockchain.resolve_proof_of_work(previous_proof)
     previous_hash = blockchain.hash(last_block)
     new_block = blockchain.create_block(proof, previous_hash)
+    blockchain.add_transaction(sender = node_address, receiver = 'Montacer', amount = 1)
 
     response = {
         'message': 'Congrats, you just mined a block!',
@@ -135,6 +162,7 @@ def mine_block():
         'timestamp': new_block['timestamp'],
         'proof': new_block['proof'],
         'previous_hash': new_block['previous_hash'],
+        'transactions': new_block['transactions'],
     }
 
     return jsonify(response), 200

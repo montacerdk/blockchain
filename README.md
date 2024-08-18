@@ -8,3 +8,5 @@
  ╚═════╝  ╚══════╝  ╚═════╝   ╚═════╝ ╚═╝  ╚═╝  ╚═════╝ ╚═╝  ╚═╝ ╚═╝  ╚═╝ ╚═╝ ╚═╝  ╚═══╝
 
 This repository contains an introduction to blockchains with some examples.
+
+## How to

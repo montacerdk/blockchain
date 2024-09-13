@@ -1,0 +1,21 @@
+meta {
+  name: CRYPTO - Conntect Node 5002
+  type: http
+  seq: 8
+}
+
+post {
+  url: http://127.0.0.1:5002/connect-node
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nodes": [
+      "http://127.0.0.1:5001",
+      "http://127.0.0.1:5003"
+    ]
+  }
+  
+}

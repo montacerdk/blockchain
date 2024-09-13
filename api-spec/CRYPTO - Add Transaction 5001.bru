@@ -1,0 +1,19 @@
+meta {
+  name: CRYPTO - Add Transaction 5001
+  type: http
+  seq: 13
+}
+
+post {
+  url: http://127.0.0.1:5001/add-transaction
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "sender": "Jo",
+      "receiver": "Montacer",
+      "amount": 220
+  }
+}
